@@ -24,12 +24,9 @@ public class ServidorAE3 {
 		LocalDateTime fecha = LocalDateTime.now();
 		DateTimeFormatter fechaLog = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		String fechaFormateada = fecha.format(fechaLog);
-		FileReader fr = new FileReader("log.txt");
-		BufferedReader br = new BufferedReader(fr); 
-		bw.write("IP: " + ip + " - "+" Hora de conexión: "+ fechaFormateada);	
-		bw.newLine();
+		bw.write("IP: " + ip + " - "+" Hora de conexión: "+ fechaFormateada+"\n");	
 		bw.flush();	
-		br.close();
+		bw.close();
 	}
 
 	public static void main(String[] args) throws IOException {
