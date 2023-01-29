@@ -45,7 +45,7 @@ public class ServidorAE3 {
 			String rutaRespuesta = "/servidor";
 			servidor.createContext(rutaRespuesta, gestorHTTP);
 
-			ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor)Executors.newFixedThreadPool(10);
+			ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor)Executors.newFixedThreadPool(100);
 			servidor.setExecutor(threadPoolExecutor);
 			servidor.start();
 			System.out.println("Servidor HTTP arranca en el puerto " + puerto);
