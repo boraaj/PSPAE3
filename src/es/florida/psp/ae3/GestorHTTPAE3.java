@@ -22,6 +22,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.*;
 
+//autors -  Borja Zafra i Pablo Rozalén
 public class GestorHTTPAE3 implements HttpHandler {
 	static MongoClient mongoClient = null;
 	static MongoDatabase database = null;
@@ -41,6 +42,8 @@ public class GestorHTTPAE3 implements HttpHandler {
 		tancarConexio();
 	}
 
+	
+	//Conexions
 	public static void obrirConexio() {
 		try {
 			mongoClient = new MongoClient("localhost", 27017);
@@ -62,8 +65,47 @@ public class GestorHTTPAE3 implements HttpHandler {
 		}
 	}
 
-	private String handleGetRequest(HttpExchange httpExchange) {
+	// *** GET *** //
+	//Metodes de les peticions GET
+	private String web404() {
 
+		String web = "";
+		web = "<html><body> Error de Busqueda, intentalo de nuevo con otra direccion. </body></html>";
+
+		return web;
+	}
+
+	private String webTodos(ArrayList<String> datos) {
+
+		String web = "";
+		web = "<html><body>  <h1>Lista de delincuentes:</h1>";
+		for (int i = 0; i < datos.size(); i++) {
+			web += datos.get(i) + "<br>";
+		}
+		web += "<p>localhost:7777/servidor/mostrarTodos para mostrar la lista de delincuentes.<br>";
+		web += "localhost:7777/servidor/mostrarUno?alias=(Introducir Alias) para mostrar información del delincuente por su alias.</p>";
+		web += "</body></html>";
+
+		return web;
+	}
+
+	private String webUno(ArrayList<String> datos) {
+
+		String web = "";
+		web = "<html><body><h1>Datos del Delincuente:</h1>";
+		web += "<b>Alias</b>: " + datos.get(0) + "<br>";
+		web += "<b>Nombre Completo</b>: " + datos.get(1) + "<br>";
+		web += "<b>Fecha Nacimiento</b>: " + datos.get(2) + "<br>";
+		web += "<b>Nacionalidad</b>: " + datos.get(3) + "<br>";
+		web += "<p>localhost:7777/servidor/mostrarTodos para mostrar la lista de delincuentes.<br>";
+		web += "localhost:7777/servidor/mostrarUno?alias=(Introducir Alias) para mostrar información del delincuente por su alias.</p>";
+		web += "</body></html>";
+
+		return web;
+	}
+
+	private String handleGetRequest(HttpExchange httpExchange) {
+		// TODO Meter las fotos
 		String web = "";
 		String tipo = httpExchange.getRequestURI().toString();
 		ArrayList<String> aliasList = new ArrayList<String>();
@@ -76,7 +118,7 @@ public class GestorHTTPAE3 implements HttpHandler {
 				aliasList.add(obj.getString("alias"));
 			}
 			web = webTodos(aliasList);
-			System.out.println(">>>>"+web);
+			System.out.println(">>>>" + web);
 			return web;
 		} else if (tipo.contains("mostrarUno")) {
 			if (httpExchange.getRequestURI().toString().split("\\?")[1].contains("alias")) {
@@ -95,7 +137,8 @@ public class GestorHTTPAE3 implements HttpHandler {
 					web = webUno(datos);
 				}
 			} else {
-				web404();
+				//TODO - revisar esto porque no acaba de llegar aquí- 
+				web = web404();
 			}
 
 		} else {
@@ -109,44 +152,8 @@ public class GestorHTTPAE3 implements HttpHandler {
 		return web;
 	}
 
-	private String web404() {
-
-		String web = "";
-		web = "<html><body> Error de Busqueda, intentalo de nuevo con otra direccion. </body></html>";
-
-		return web;
-	}
-
-	private String webTodos(ArrayList<String> datos) {
-
-		String web = "";
-		web = "<html><body>  <h1>Lista de delincuentes:</h1>";
-		for (int i = 0; i < datos.size(); i++) {
-			web += datos.get(i) + "<br>";
-		}
-		web += "<p>localhost:7777/servidor/mostrarTodo para mostrar la lista de delincuentes.<br>";
-		web += "localhost:7777/servidor/mostrarUno?=(alias) para mostrar información del delincuente por su alias.</p>";
-		web += "</body></html>";
-
-		return web;
-	}
-
-	private String webUno(ArrayList<String> datos) {
-
-		String web = "";
-		web = "<html><body><h1>Datos del Delincuente:</h1>";
-		web += "<b>Alias</b>: " + datos.get(0) + "<br>";
-		web += "<b>Nombre Completo</b>: " + datos.get(1) + "<br>";
-		web += "<b>Fecha Nacimiento</b>: " + datos.get(2) + "<br>";
-		web += "<b>Nacionalidad</b>: " + datos.get(3) + "<br>";
-		web += "<p>servidor/mostrarTodo para mostrar la lista de delincuentes.<br>";
-		web += "servidor/mostrarUno para mostrar el buscado.</p>";
-		web += "</body></html>";
-
-		return web;
-	}
-
 	private void handleGETResponse(HttpExchange httpExchange, String requestParamValue) {
+		// TODO Meter las fotos
 		OutputStream outputStream = httpExchange.getResponseBody();
 		String htmlResponse = requestParamValue;
 		try {
@@ -160,20 +167,34 @@ public class GestorHTTPAE3 implements HttpHandler {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
+	// *** POST *** //
 	private String handlePostRequest(HttpExchange httpExchange) {
-		InputStream inputStream = httpExchange.getRequestBody();
-
-		String postRequest = null;
-		return postRequest;
+		InputStream is  = httpExchange.getRequestBody();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new  BufferedReader(isr);
+		StringBuilder sb = new StringBuilder();
+		String line;
+		
+		try {
+			while ((line = br.readLine())!= null) {
+				sb.append(line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(sb.toString());
+		return sb.toString();
 	}
 
 	private void handlePOSTResponse(HttpExchange httpExchange, String requestParamValue) {
+		
 		OutputStream outputStream = httpExchange.getResponseBody();
-		String htmlResponse = "Respuesta a la petición POST";
 		try {
-			httpExchange.sendResponseHeaders(200, htmlResponse.length());
-			outputStream.write(htmlResponse.getBytes());
+			httpExchange.sendResponseHeaders(204, -1);
+			String request = outputStream.toString();
+			System.out.println("PETICION>>"+request);
 			outputStream.flush();
 			outputStream.close();
 		} catch (IOException e) {
