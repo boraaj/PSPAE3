@@ -1,5 +1,6 @@
 package es.florida.psp.ae3;
 
+import java.awt.geom.QuadCurve2D;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,8 +43,7 @@ public class GestorHTTPAE3 implements HttpHandler {
 		tancarConexio();
 	}
 
-	
-	//Conexions
+	// Conexions
 	public static void obrirConexio() {
 		try {
 			mongoClient = new MongoClient("localhost", 27017);
@@ -66,7 +66,7 @@ public class GestorHTTPAE3 implements HttpHandler {
 	}
 
 	// *** GET *** //
-	//Metodes de les peticions GET
+	// Metodes de les peticions GET
 	private String web404() {
 
 		String web = "";
@@ -137,12 +137,11 @@ public class GestorHTTPAE3 implements HttpHandler {
 					web = webUno(datos);
 				}
 			} else {
-				//TODO - revisar esto porque no acaba de llegar aquí- 
 				web = web404();
 			}
 
 		} else {
-			web404();
+			web = web404();
 		}
 		// String valor =
 		// httpExchange.getRequestURI().toString().split("\\?")[1].split("=")[1];
@@ -167,34 +166,60 @@ public class GestorHTTPAE3 implements HttpHandler {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	// *** POST *** //
+	
+	private void addDelincuente(ArrayList<String> document) {
+		
+		Document doc = new Document();
+		doc.append("alias", document.get(0));
+		doc.append("nombreCompleto", document.get(1));
+		doc.append("fechaNacimiento", document.get(2));
+		doc.append("nacionalidad", document.get(3));
+		coleccion.insertOne(doc);
+		mongoClient.close();
+	}
+	
+	
+	
 	private String handlePostRequest(HttpExchange httpExchange) {
-		InputStream is  = httpExchange.getRequestBody();
+		
+		InputStream is = httpExchange.getRequestBody();
 		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new  BufferedReader(isr);
+		BufferedReader br = new BufferedReader(isr);
 		StringBuilder sb = new StringBuilder();
 		String line;
-		
+
 		try {
-			while ((line = br.readLine())!= null) {
+			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(sb.toString());
+
+		//Agregar el documento al mongo
+		JSONObject jObject = new JSONObject(sb.toString());
+		String alias = jObject.getString("alias"); 
+		String nombre = jObject.getString("nombreCompleto"); 
+		String fechaNacimiento = jObject.getString("fechaNacimiento");
+		String nacionalidad = jObject.getString("nacionalidad");
+		ArrayList<String> document = new ArrayList<>();
+		document.add(alias);
+		document.add(nombre);
+		document.add(fechaNacimiento); 
+		document.add(nacionalidad); 
+		addDelincuente(document);
 		return sb.toString();
 	}
 
 	private void handlePOSTResponse(HttpExchange httpExchange, String requestParamValue) {
-		
+		System.out.println(requestParamValue);
 		OutputStream outputStream = httpExchange.getResponseBody();
 		try {
 			httpExchange.sendResponseHeaders(204, -1);
 			String request = outputStream.toString();
-			System.out.println("PETICION>>"+request);
+			System.out.println("PETICION>>" + request);
 			outputStream.flush();
 			outputStream.close();
 		} catch (IOException e) {
