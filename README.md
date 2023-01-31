@@ -14,6 +14,7 @@ URL De Peticions
  - Mostrar dades de un delincuent => http://localhost:7777/servidor/mostrarUno?=(alies de delincuent);
  
  // POST //
+ 
  Dins de POSTMAN 
  - Afegir una nova peticio POST y afegir al body el json del document DOcumentProba.json. 
    IMPORTANT! Al fer la peticio, el POSTMAN es quedara procesant fins que acaben de introduir les dades del mail a la consola de Eclipse. 
