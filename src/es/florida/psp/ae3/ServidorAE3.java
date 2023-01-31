@@ -19,6 +19,11 @@ import com.sun.net.httpserver.HttpServer;
 
 public class ServidorAE3 {
 	
+	/**
+	 * Metode que registra l'hora de conexio i la IP en un arxiu log.txt. 
+	 * @param ip
+	 * @throws IOException
+	 */
 	private static void logIn(String ip) throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter("log.txt",true));
 		LocalDateTime fecha = LocalDateTime.now();
@@ -31,8 +36,8 @@ public class ServidorAE3 {
 
 	public static void main(String[] args) throws IOException {
 		
-		//hacemos conexion y escribimos entrada en log.txt con ip y timestamp
 		try {
+			//Llegim la configuracio de conexio desde el arxiu config.txt. 
 			FileReader fr = new FileReader("config.txt");
 			BufferedReader br = new BufferedReader(fr);
 			String host = br.readLine();
