@@ -17,7 +17,9 @@ URL De Peticions
  Dins de POSTMAN 
  - Afegir una nova peticio POST y afegir al body el json del document DOcumentProba.json. 
    IMPORTANT! Al fer la peticio, el POSTMAN es quedara procesant fins que acaben de introduir les dades del mail a la consola de Eclipse. 
+   
    URL de peticio => http://localhost:7777/servidor/nuevo
+   
  - Al introduir les dades del mail en la consola de Eclipse ens demanara, entre altres, la contrasenya del mail. Aquesta contrasenya es la contrasenya generada per GMail    que ens proporciona al afegir autoritzacio pero emprar una aplicacion externa. No la contrasenya que tenim de eixe compte de Mail!!!
  
   (; Gracies per la atencio ;)
