@@ -1,6 +1,6 @@
 # PSPAE3
 PROJECTE PSPAE3 
-Deselvolupat pero Borja Zafra y Pablo Rozalén. 
+Deselvolupat per Borja Zafra y Pablo Rozalén. 
 
 Aspectes de importancia abans de ejecutar. 
 
